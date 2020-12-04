@@ -8,7 +8,7 @@ class Files extends AbstractHelper
 {
     public $data;
     public $title;
-    public $path;
+    public $reference;
     public $form;
     public $primary_key = 'UUID';
     
@@ -33,17 +33,19 @@ class Files extends AbstractHelper
         $html = "";
         
         $form = new FilesUploadForm('FilesUploadForm');
-        $form->path = $this->path;
         $form->init();
         $form->addInputFilter();
         
         $form->prepare();
-        $form->setAttribute('action', $this->view->url('files', ['action' => 'upload']));
+        $form->setAttribute('action', $this->view->url('files/default', ['action' => 'upload']));
         
         $submit = $form->get('SUBMIT');
         $file = $form->get('FILE');
+        $reference = $form->get('REFERENCE');
+            $reference->setValue($this->reference);
         
         $html .= $this->view->form()->openTag($form);
+        $html .= $this->view->FormHidden($form->get('REFERENCE'));
 //         $html .= $this->view->formCollection($form);
         $html .= "<div class='input-group'>";
         $html .= "<div class='custom-file'>";
@@ -131,9 +133,9 @@ class Files extends AbstractHelper
         return $this;
     }
     
-    public function setPath($path)
+    public function setReference($reference)
     {
-        $this->path = $path;
+        $this->reference = $reference;
         return $this;
     }
     

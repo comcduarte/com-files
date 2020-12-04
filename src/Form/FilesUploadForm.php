@@ -6,11 +6,10 @@ use Laminas\Form\Element\Csrf;
 use Laminas\Form\Element\File;
 use Laminas\Form\Element\Submit;
 use Laminas\InputFilter\InputFilter;
+use Laminas\Form\Element\Hidden;
 
 class FilesUploadForm extends Form
 {
-    public $path;
-    
     public function init()
     {
         $this->add([
@@ -23,6 +22,11 @@ class FilesUploadForm extends Form
             'options' => [
                 'label' => 'Upload File',
             ],
+        ]);
+        
+        $this->add([
+            'name' => 'REFERENCE',
+            'type' => Hidden::class,
         ]);
         
         $this->add(new Csrf('SECURITY'));
@@ -46,16 +50,6 @@ class FilesUploadForm extends Form
             'name' => 'FILE',
             'required' => FALSE,
             'filters' => [
-                [
-                    'name' => 'filerenameupload',
-                    'options' => [
-                        'target'    => $this->path,
-                        'useUploadName' => TRUE,
-                        'useUploadExtension' => TRUE,
-                        'overwrite' => TRUE,
-                        'randomize' => FALSE,
-                    ],
-                ],
             ],
             'validators' => [
                 [
