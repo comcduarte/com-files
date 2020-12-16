@@ -92,6 +92,10 @@ return [
     ],
     'view_manager' => [
         'template_map' => [
+            'files' => __DIR__ . '/../view/files/files/files.phtml',
+            'files_layout' => __DIR__ . '/../view/files/layouts/files_layout.phtml',
+            'files_view' => __DIR__ . '/../view/files/files/view.phtml',
+            'files_config' => __DIR__ . '/../view/files/files/config.phtml',
         ],
         'template_path_stack' => [
             __DIR__ . '/../view',

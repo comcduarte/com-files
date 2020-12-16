@@ -3,6 +3,8 @@ namespace Files\Controller;
 
 use Components\Controller\AbstractConfigController;
 use Files\Sql\Ddl\Column\LongBlob;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Ddl\CreateTable;
 use Laminas\Db\Sql\Ddl\DropTable;
@@ -10,10 +12,22 @@ use Laminas\Db\Sql\Ddl\Column\Datetime;
 use Laminas\Db\Sql\Ddl\Column\Integer;
 use Laminas\Db\Sql\Ddl\Column\Varchar;
 use Laminas\Db\Sql\Ddl\Constraint\PrimaryKey;
+use Laminas\View\Model\ViewModel;
 use Settings\Model\SettingsModel;
 
 class FilesConfigController extends AbstractConfigController
 {
+    public function indexAction()
+    {
+        $view = new ViewModel();
+        $view->setTemplate('files/config');
+        $view->setVariables([
+            'route' => $this->getRoute(),
+            'checks' => $this->getCheckFunctions(),
+        ]);
+        return ($view);
+    }
+    
     public function clearDatabase()
     {
         $sql = new Sql($this->adapter);
@@ -71,8 +85,12 @@ class FilesConfigController extends AbstractConfigController
         $setting = new SettingsModel($this->adapter);
         $setting->MODULE = $module;
         
+        $checks = $this->getCheckFunctions();
+        $max_allowed_packet = $checks['mysql_params']['function'];
+        
         $settings = [
             'CURRENT_DB' => '0000',
+            'MAX_ALLOWED_PACKET' => $max_allowed_packet,
         ];
         
         foreach ($settings as $rec => $value) {
@@ -105,5 +123,39 @@ class FilesConfigController extends AbstractConfigController
         $settings->update();
     }
 
+    public function getCheckFunctions()
+    {
+        /**
+         * Inline Checks
+         */
+        $directory_exists = function($dir){if (!file_exists($dir)) {return "";} else {return 'checked=""';}};
+        $mysql_params = function($param){
+            $sql = new Sql($this->adapter);
+            $select = new Select();
+            $select->columns([new Expression('@@global.max_allowed_packet')]);
+            $statement = $sql->prepareStatementForSqlObject($select);
+            $resultSet = $statement->execute();
+            $result = $resultSet->current();
+            return $result['Expression1'];
+        };
+        
+        /**
+         * Array of Checks
+         */
+        $checks = [
+            'directory_exists' => [
+                'label' => "Directory: ./data/files",
+                'function' => $directory_exists('./data/files'),
+                'type' => 'checkbox',
+            ],
+            'mysql_params' => [
+                'label' => "MySQL Parameter: max_allowed_bytes",
+                'function' => $mysql_params('max_allowed_packet'),
+                'type' => 'textbox',
+            ],
+        ];
+        
+        return $checks;
+    }
     
 }

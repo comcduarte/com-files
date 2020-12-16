@@ -3,10 +3,13 @@ namespace Files\Model;
 
 use Components\Model\AbstractBaseModel;
 use Laminas\Db\Sql\Insert;
+use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Where;
+use Laminas\Filter\Encrypt;
 use Settings\Model\SettingsModel;
 use Exception;
+use Laminas\Filter\Decrypt;
 
 class FilesModel extends AbstractBaseModel
 {
@@ -47,8 +50,6 @@ class FilesModel extends AbstractBaseModel
     
     public function getTableName()
     {
-
-        
         return $this::INDEX_TABLE;
     }
     
@@ -108,7 +109,7 @@ class FilesModel extends AbstractBaseModel
         
         $insert->values([
             $this->UUID,
-            $this->BLOB,
+            $this->encrypt($this->BLOB),
         ]);
         
         $statement = $sql->prepareStatementForSqlObject($insert);
@@ -121,6 +122,64 @@ class FilesModel extends AbstractBaseModel
         return TRUE;
     }
 
+    public function read(Array $criteria)
+    {
+        /****************************************
+         * INDEX TABLE
+         ****************************************/
+        $sql = new Sql($this->adapter);
+        
+        $select = new Select();
+        $select->from($this->getTableName());
+        $select->where($criteria);
+        
+        $statement = $sql->prepareStatementForSqlObject($select);
+        
+        try {
+            $resultSet = $statement->execute();
+        } catch (Exception $e) {
+            return FALSE;
+        }
+        
+        if ($resultSet->getAffectedRows() == 0) {
+            return FALSE;
+        } else {
+            $this->exchangeArray($resultSet->current());
+//             return TRUE;
+        }
+        
+        /****************************************
+         * BLOB TABLE
+         ****************************************/
+        $this->public_attributes = ['UUID','BLOB'];
+        
+        $sql = new Sql($this->adapter);
+        
+        $select = new Select();
+        $select->from($this->getCurrentDbTableName());
+        $select->where($criteria);
+        
+        $statement = $sql->prepareStatementForSqlObject($select);
+        
+        try {
+            $resultSet = $statement->execute();
+        } catch (Exception $e) {
+            return FALSE;
+        }
+        
+        if ($resultSet->getAffectedRows() == 0) {
+            return FALSE;
+        } else {
+            $this->exchangeArray($resultSet->current());
+//             return TRUE;
+        }
+        
+        $blob = $this->decrypt($this->BLOB);
+        $this->BLOB = $blob;
+        
+        return TRUE;
+    }
+    
     public function findFiles($reference)
     {
         $where = new Where();
@@ -130,5 +189,25 @@ class FilesModel extends AbstractBaseModel
         return $files;
     }
 
-
+    /**
+     * @param string $value Content to encrypt
+     * @return string The encrypted content
+     */
+    private function encrypt(string $value)
+    {
+        $encrypt = new Encrypt(['adapter' => 'BlockCipher']);
+        $encrypt->setKey('--super-secret-passphrase--');
+        return $encrypt->filter($value);
+    }
+    
+    /**
+     * @param string $value Content to encrypt
+     * @return string The encrypted content
+     */
+    private function decrypt(string $value)
+    {
+        $decrypt = new Decrypt(['adapter' => 'BlockCipher']);
+        $decrypt->setKey('--super-secret-passphrase--');
+        return $decrypt->filter($value);
+    }
 }
