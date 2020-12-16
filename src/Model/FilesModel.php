@@ -10,6 +10,8 @@ use Laminas\Filter\Encrypt;
 use Settings\Model\SettingsModel;
 use Exception;
 use Laminas\Filter\Decrypt;
+use Laminas\Filter\Compress;
+use Laminas\Filter\Decompress;
 
 class FilesModel extends AbstractBaseModel
 {
@@ -195,9 +197,12 @@ class FilesModel extends AbstractBaseModel
      */
     private function encrypt(string $value)
     {
+        $compress = new Compress(['adapter' => 'Bz2']);
+        
         $encrypt = new Encrypt(['adapter' => 'BlockCipher']);
         $encrypt->setKey('--super-secret-passphrase--');
-        return $encrypt->filter($value);
+        
+        return $encrypt->filter($compress->filter($value));
     }
     
     /**
@@ -206,8 +211,10 @@ class FilesModel extends AbstractBaseModel
      */
     private function decrypt(string $value)
     {
+        $decompress = new Decompress(['adapter' => 'Bz2']);
+        
         $decrypt = new Decrypt(['adapter' => 'BlockCipher']);
         $decrypt->setKey('--super-secret-passphrase--');
-        return $decrypt->filter($value);
+        return $decompress->filter($decrypt->filter($value));
     }
 }
