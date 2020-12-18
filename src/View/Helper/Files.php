@@ -3,7 +3,12 @@ namespace Files\View\Helper;
 
 use Laminas\View\Helper\AbstractHelper;
 use Files\Form\FilesUploadForm;
-
+/**
+ * 
+ * @author DuarteC
+ *
+ * @use <?php $this->relatedFiles()->setTitle('Related Files')->setData($this->files)->setReference($this->reference)->render(); ?>
+ */
 class Files extends AbstractHelper
 {
     public $data;
