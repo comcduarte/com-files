@@ -84,6 +84,38 @@ class FilesController extends AbstractActionController
         return $view;
     }
     
+    public function deleteAction()
+    {
+        $view = new ViewModel();
+        $view->setTemplate('base/delete');
+        
+        $this->form->init();
+        
+        $primary_key = $this->getPrimaryKey();
+        $this->files->read([$this->files->getPrimaryKey() => $primary_key]);
+        $this->form->bind($this->files);
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $del = $request->getPost('del', 'No');
+            
+            if ($del == 'Yes') {
+                $this->files->delete();
+            }
+            
+            $route = $this->getEvent()->getRouteMatch()->getMatchedRouteName();
+            return $this->redirect()->toRoute($route, ['action' => 'index']);
+        }
+        
+        
+        $view->setVariables([
+            'model', $this->files,
+            'form' => $this->form,
+            'primary_key' => $this->files->getPrimaryKey(),
+        ]);
+        return ($view);
+    }
+    
     public function getFiles()
     {
         return $this->files;
@@ -94,4 +126,17 @@ class FilesController extends AbstractActionController
         $this->files = $files;
         return $this;
     }
+
+    public function getPrimaryKey()
+    {
+        $primary_key = $this->params()->fromRoute(strtolower($this->files->getPrimaryKey()),0);
+        if (!$primary_key) {
+            $this->flashmessenger()->addErrorMessage("Unable to retrieve record. Value not passed.");
+            
+            $url = $this->getRequest()->getHeader('Referer')->getUri();
+            return $this->redirect()->toUrl($url);
+        }
+        return $primary_key;
+    }
+
 }

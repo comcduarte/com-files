@@ -3,14 +3,32 @@
 		<div>
 			<b><?=$this->title?></b>
 		</div>
+		<?php
+		if ($this->form) {
+		    $this->form->setAttribute('action', $this->url('files/default', ['action' => 'upload']));
+		    $this->form->prepare();
+		    echo $this->form()->openTag($this->form);
+		    echo $this->formRow($this->form->get('UUID'));
+		    echo $this->formRow($this->form->get('REFERENCE'));
+		    
+		    $this->headScript()->prependFile('https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js');
+		    ?>
+		    <script type="text/javascript">
+    		    $(document).ready(function () {
+                  bsCustomFileInput.init()
+                });
+		    </script>
+		    <div class="custom-file">
+                <input type="file" class="custom-file-input" id="FILE" name="FILE" onchange="form.submit()">
+                <label class="custom-file-label" for="customFile">Choose file</label>
+            </div>
+		    <?
+		     
+		    echo $this->formRow($this->form->get('SECURITY'));
+		    echo $this->form()->closeTag($this->form);
+		}
 		
-		<?php if ($this->form) : ?>
-    		<?php $this->form->setAttribute('action', $this->url('files/default', ['action' => 'upload'])); ?>
-    		<?php $this->form->prepare(); ?>
-    		<?php echo $this->form()->openTag($this->form); ?>
-    		<?php echo $this->formCollection($this->form); ?>		
-    		<?php echo $this->form()->closeTag($this->form); ?>
-		<?php endif; ?>
+		?>
 	</div>
 
 	<div class="card-body">
@@ -45,7 +63,7 @@
                             <?php 
                             foreach ($this->params as $item) {
                                 $href = $this->url($item['route'], ['action' => $item['action'], strtolower($this->primary_key) => $record[$item['key']]], null, true);
-                                echo "<a target='_blank' class='dropdown-item' href='$href'>" . $item['label'] . "</a>";
+                                echo "<a class='dropdown-item' href='$href'>" . $item['label'] . "</a>";
                             }
                             ?>
                             </div>

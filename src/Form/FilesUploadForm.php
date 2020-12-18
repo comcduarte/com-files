@@ -1,23 +1,38 @@
 <?php
 namespace Files\Form;
 
+use Components\Form\Element\Uuid;
 use Laminas\Form\Form;
 use Laminas\Form\Element\Csrf;
 use Laminas\Form\Element\File;
+use Laminas\Form\Element\Hidden;
 use Laminas\Form\Element\Submit;
 use Laminas\InputFilter\InputFilter;
-use Laminas\Form\Element\Hidden;
 
 class FilesUploadForm extends Form
 {
     public function init()
     {
         $this->add([
+            'name' => 'UUID',
+            'type' => Uuid::class,
+            'attributes' => [
+                'id' => 'UUID',
+                'class' => 'form-control',
+                'required' => 'true',
+            ],
+            'options' => [
+                'label' => 'UUID',
+            ],
+        ],['priority' => 0]);
+        
+        $this->add([
             'name' => 'FILE',
             'type' => File::class,
             'attributes' => [
                 'id' => 'FILE',
-                'class' => 'custom-file-input',
+                'class' => 'form-input',
+                'onchange' => 'form.submit()',
             ],
             'options' => [
                 'label' => 'Upload File',

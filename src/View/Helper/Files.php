@@ -62,6 +62,12 @@ class Files extends AbstractHelper
                     'key' => 'UUID',
                     'label' => 'View',
                 ],
+                [
+                    'route' => 'files/default',
+                    'action' => 'delete',
+                    'key' => 'UUID',
+                    'label' => 'Delete',
+                ],
             ],
         ];
         
