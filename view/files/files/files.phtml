@@ -4,7 +4,14 @@
 			<b><?=$this->title?></b>
 		</div>
 		<?php
-		if ($this->form) {
+		$user = $this->currentUser();
+		$roles = [];
+		foreach ($user->memberOf() as $role) {
+		    array_push($roles, $role['ROLENAME']);
+		}
+		
+		
+		if ($this->form && $this->acl_service->isAllowed($roles, 'files/default', 'upload')) {
 		    $this->form->setAttribute('action', $this->url('files/default', ['action' => 'upload']));
 		    $this->form->prepare();
 		    echo $this->form()->openTag($this->form);
@@ -62,8 +69,10 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <?php 
                             foreach ($this->params as $item) {
-                                $href = $this->url($item['route'], ['action' => $item['action'], strtolower($this->primary_key) => $record[$item['key']]], null, true);
-                                echo "<a class='dropdown-item' href='$href'>" . $item['label'] . "</a>";
+                                if ($this->acl_service->isAllowed($roles, $item['route'], $item['action'])) {
+                                    $href = $this->url($item['route'], ['action' => $item['action'], strtolower($this->primary_key) => $record[$item['key']]], null, true);
+                                    echo "<a class='dropdown-item' href='$href'>" . $item['label'] . "</a>";
+                                }
                             }
                             ?>
                             </div>

@@ -3,6 +3,7 @@ namespace Files\View\Helper;
 
 use Laminas\View\Helper\AbstractHelper;
 use Files\Form\FilesUploadForm;
+use Components\Traits\AclAwareTrait;
 /**
  * 
  * @author DuarteC
@@ -11,6 +12,8 @@ use Files\Form\FilesUploadForm;
  */
 class Files extends AbstractHelper
 {
+    use AclAwareTrait;
+    
     public $data;
     public $title;
     public $reference;
@@ -57,6 +60,7 @@ class Files extends AbstractHelper
         $partialHelper = $this->view->plugin('partial');
         $params = [
             'title' => $this->getTitle(),
+            'acl_service' => $this->getAclService(),
             'data' => $this->getData(),
             'primary_key' => $this->primary_key,
             'form' => $form,
