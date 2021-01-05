@@ -65,13 +65,27 @@ class FilesUploadForm extends Form
             'name' => 'FILE',
             'required' => FALSE,
             'filters' => [
+                [
+                    'name' => 'FileRenameUpload',
+                    'options' => [
+                        'target' => './data/',
+                        'useUploadName' => TRUE,
+                        'useUploadExtension' => TRUE,
+                        'overwrite' => TRUE,
+                        'randomize' => FALSE,
+                    ],
+                ],
             ],
             'validators' => [
                 [
                     'name'    => 'FileMimeType',
                     'options' => [
-                        'mimeType'  => ['application/pdf', 'text/plain']
-                    ]
+                        'mimeType' => [
+                            'application/pdf',
+                            'text/plain',
+                            'application/zip',
+                        ],
+                    ],
                 ],
             ],
         ]);
