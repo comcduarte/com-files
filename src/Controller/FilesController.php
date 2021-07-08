@@ -23,7 +23,6 @@ class FilesController extends AbstractActionController
     {
         $user = $this->currentUser();
         $uuid = $user->UUID;
-        $this->form->path = './data/files/' . $uuid;
         $this->form->addInputFilter();
         
         $request = $this->getRequest();
@@ -90,6 +89,7 @@ class FilesController extends AbstractActionController
         $view->setTemplate('base/delete');
         
         $this->form->init();
+        $view->setVariable('referring_url', $_SERVER['HTTP_REFERER']);
         
         $primary_key = $this->getPrimaryKey();
         $this->files->read([$this->files->getPrimaryKey() => $primary_key]);
@@ -103,8 +103,7 @@ class FilesController extends AbstractActionController
                 $this->files->delete();
             }
             
-            $route = $this->getEvent()->getRouteMatch()->getMatchedRouteName();
-            return $this->redirect()->toRoute($route, ['action' => 'index']);
+            return $this->redirect()->toUrl($request->getPost('referring_url'));
         }
         
         
