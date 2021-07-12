@@ -21,8 +21,6 @@ class FilesController extends AbstractActionController
 
     public function uploadAction()
     {
-        $user = $this->currentUser();
-        $uuid = $user->UUID;
         $this->form->addInputFilter();
         
         $request = $this->getRequest();

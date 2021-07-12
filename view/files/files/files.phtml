@@ -29,8 +29,7 @@
                 <input type="file" class="custom-file-input" id="FILE" name="FILE" onchange="form.submit()">
                 <label class="custom-file-label" for="customFile">Choose file</label>
             </div>
-		    <?
-		     
+		    <?php
 		    echo $this->formRow($this->form->get('SECURITY'));
 		    echo $this->form()->closeTag($this->form);
 		}
@@ -49,19 +48,21 @@
         	       if (strpos($key, $this->primary_key) === 0 ) { continue; }
         	       echo "<th>$key</th>";
         	   }
-           ?>
+            ?>
            			<th></th>
         		</tr>
         	</thead>
         	<tbody>
-        		<?php foreach ($this->data as $record) : ?>
+        		<?php foreach ($this->data as $record) { ?>
         		<tr>
-        			<?php foreach ($record as $key => $value) : ?>
-        				<?php if (strpos($key, $this->primary_key) === 0 ) { continue; } ?>
-        				<td><?php echo $value; ?></td>
-        			<?php endforeach; ?>
+        			<?php 
+        			foreach ($record as $key => $value) {
+        				if (strpos($key, $this->primary_key) === 0 ) { continue; }
+        				echo "<td>$value</td>";
+        			}
+        			?>
         			<td class="float-right">
-        			<?php if (sizeof($this->params)) : ?>
+        			<?php if (sizeof($this->params)) { ?>
                         <div class="dropdown">
                             <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             	<i class="fas fa-bars"></i>
@@ -77,10 +78,10 @@
                             ?>
                             </div>
                         </div>
-                    <?php endif; ?>
+                    <?php } ?>
         			</td>
         		</tr>
-        		<?php endforeach; ?>
+        		<?php } ?>
         	</tbody>
     	</table>
     	<?php } ?>
