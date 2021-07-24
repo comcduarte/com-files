@@ -44,7 +44,6 @@ class FilesConfigController extends AbstractConfigController
         
         
         $ddl[] = new DropTable('index');
-        $ddl[] = new DropTable('settings');
         
         foreach ($ddl as $obj) {
             $this->adapter->query($sql->buildSqlString($obj), $this->adapter::QUERY_MODE_EXECUTE);
