@@ -52,6 +52,14 @@ return [
             ],
         ],
     ],
+    'acl' => [
+        'everyone' => [
+            'files/default' => [],
+        ],
+        'admin' => [
+            'files/config' => [],
+        ],
+    ],
     'controllers' => [
         'factories' => [
             FilesController::class => FilesControllerFactory::class,

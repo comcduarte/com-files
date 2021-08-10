@@ -37,4 +37,24 @@ trait FilesAwareTrait
     {
         return $this->files_adapter;
     }
+    
+    /**
+     * 
+     * @return \Files\Model\FilesModel
+     */
+    public function getFiles()
+    {
+        return $this->files;
+    }
+    
+    /**
+     * 
+     * @param \Files\Model\FilesModel $files
+     * @return \Files\Traits\FilesAwareTrait
+     */
+    public function setFiles($files)
+    {
+        $this->files = $files;
+        return $this;
+    }
 }
