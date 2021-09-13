@@ -6,12 +6,12 @@ use Laminas\Db\Sql\Insert;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Where;
+use Laminas\Filter\Compress;
+use Laminas\Filter\Decompress;
+use Laminas\Filter\Decrypt;
 use Laminas\Filter\Encrypt;
 use Settings\Model\SettingsModel;
 use Exception;
-use Laminas\Filter\Decrypt;
-use Laminas\Filter\Compress;
-use Laminas\Filter\Decompress;
 
 class FilesModel extends AbstractBaseModel
 {
@@ -23,32 +23,6 @@ class FilesModel extends AbstractBaseModel
     public $ACL;
     public $BLOB;
     public $REFERENCE;
-    
-    public function __construct()
-    {
-//         $this->setDbAdapter($adapter);
-        
-        $this->private_attributes = [
-            'adapter',                  //-- From AdapterAwareTrait --//
-            'table',
-            'inputFilter',
-            'private_attributes',
-            'public_attributes',
-            'primary_key',
-            'required',
-            'current_user',
-        ];
-        $this->UUID = $this->generate_uuid();
-        $this->setPrimaryKey('UUID');
-        
-        $date = new \DateTime('now',new \DateTimeZone('EDT'));
-        $today = $date->format('Y-m-d H:i:s');
-        $this->DATE_CREATED = $today;
-        
-        $this->STATUS = $this::ACTIVE_STATUS;
-        
-        $this->public_attributes = array_diff(array_keys(get_object_vars($this)), $this->private_attributes);
-    }
     
     public function getTableName()
     {
@@ -64,7 +38,7 @@ class FilesModel extends AbstractBaseModel
     
     public function create()
     {
-        $date = new \DateTime('now',new \DateTimeZone('EDT'));
+        $date = new \DateTime('now',new \DateTimeZone('UTC'));
         $this->DATE_CREATED = $date->format('Y-m-d H:i:s');
         
         if (is_null($this->UUID)) {

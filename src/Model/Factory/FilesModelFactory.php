@@ -9,8 +9,8 @@ class FilesModelFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $model = new FilesModel();
-        $model->setDbAdapter($container->get('files-model-adapter'));
+        $adapter = $container->get('files-model-adapter');
+        $model = new FilesModel($adapter);
         return $model;
     }
 }
