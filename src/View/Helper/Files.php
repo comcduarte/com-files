@@ -3,7 +3,7 @@ namespace Files\View\Helper;
 
 use Laminas\View\Helper\AbstractHelper;
 use Files\Form\FilesUploadForm;
-use Components\Traits\AclAwareTrait;
+use Acl\Traits\AclAwareTrait;
 /**
  * 
  * @author DuarteC
