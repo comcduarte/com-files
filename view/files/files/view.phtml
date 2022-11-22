@@ -1,0 +1,8 @@
+<?php
+header('Content-Type: ' . $this->TYPE);
+header('Content-Length: ' . $this->SIZE);
+header('Content-Disposition: inline; filename="' . $this->NAME . '"');
+header('Content-Transfer-Encoding: binary');
+header('Accept-Ranges: bytes');
+?>
+<?php echo $this->data; ?>

@@ -1,0 +1,89 @@
+<div class="card mb-4">
+	<div class="card-header d-flex justify-content-between">
+		<div>
+			<b><?=$this->title?></b>
+		</div>
+		<?php
+		$user = $this->currentUser();
+		$roles = [];
+		foreach ($user->memberOf() as $role) {
+		    array_push($roles, $role['ROLENAME']);
+		}
+		
+		
+		if ($this->form && $this->acl_service->isAllowed($roles, 'files/default', 'upload')) {
+		    $this->form->setAttribute('action', $this->url('files/default', ['action' => 'upload']));
+		    $this->form->prepare();
+		    echo $this->form()->openTag($this->form);
+		    echo $this->formRow($this->form->get('UUID'));
+		    echo $this->formRow($this->form->get('REFERENCE'));
+		    
+		    $this->headScript()->prependFile('https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js');
+		    ?>
+		    <script type="text/javascript">
+    		    $(document).ready(function () {
+                  bsCustomFileInput.init()
+                });
+		    </script>
+		    <div class="custom-file">
+                <input type="file" class="custom-file-input" id="FILE" name="FILE" onchange="form.submit()">
+                <label class="custom-file-label" for="customFile">Choose file</label>
+            </div>
+		    <?php
+		    echo $this->formRow($this->form->get('SECURITY'));
+		    echo $this->form()->closeTag($this->form);
+		}
+		
+		?>
+	</div>
+
+	<div class="card-body">
+		<?php if (sizeof($data) === 0) { echo "No Records Retrieved."; } else { ?>
+    	<table class="table table-striped">
+        	<thead>
+        		<tr>
+        	<?php 
+        	   $header = array_keys($this->data[0]); 
+        	   foreach ($header as $key) {
+        	       if (strpos($key, $this->primary_key) === 0 ) { continue; }
+        	       echo "<th>$key</th>";
+        	   }
+            ?>
+           			<th></th>
+        		</tr>
+        	</thead>
+        	<tbody>
+        		<?php foreach ($this->data as $record) { ?>
+        		<tr>
+        			<?php 
+        			foreach ($record as $key => $value) {
+        				if (strpos($key, $this->primary_key) === 0 ) { continue; }
+        				echo "<td>$value</td>";
+        			}
+        			?>
+        			<td class="float-right">
+        			<?php if (sizeof($this->params)) { ?>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            	<i class="fas fa-bars"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <?php 
+                            foreach ($this->params as $item) {
+                                if ($this->acl_service->isAllowed($roles, $item['route'], $item['action'])) {
+                                    $href = $this->url($item['route'], ['action' => $item['action'], strtolower($this->primary_key) => $record[$item['key']]], null, true);
+                                    echo "<a class='dropdown-item' href='$href'>" . $item['label'] . "</a>";
+                                }
+                            }
+                            ?>
+                            </div>
+                        </div>
+                    <?php } ?>
+        			</td>
+        		</tr>
+        		<?php } ?>
+        	</tbody>
+    	</table>
+    	<?php } ?>
+	</div>
+</div>
