@@ -4,8 +4,8 @@ namespace Files\Controller\Factory;
 use Files\Controller\FilesController;
 use Files\Form\FilesUploadForm;
 use Files\Model\FilesModel;
-use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 
 class FilesControllerFactory implements FactoryInterface
 {

@@ -2,8 +2,8 @@
 namespace Files\Controller\Factory;
 
 use Files\Controller\FilesConfigController;
-use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 
 class FilesConfigControllerFactory implements FactoryInterface
 {
