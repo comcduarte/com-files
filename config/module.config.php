@@ -53,7 +53,7 @@ return [
         ],
     ],
     'acl' => [
-        'everyone' => [
+        'EVERYONE' => [
             'files/default' => [],
         ],
         'admin' => [
