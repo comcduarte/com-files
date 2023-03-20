@@ -1,9 +1,9 @@
 <?php
 namespace Files\View\Helper;
 
-use Laminas\View\Helper\AbstractHelper;
+use Components\Traits\AclAwareTrait;
 use Files\Form\FilesUploadForm;
-use Acl\Traits\AclAwareTrait;
+use Laminas\View\Helper\AbstractHelper;
 /**
  * 
  * @author DuarteC
