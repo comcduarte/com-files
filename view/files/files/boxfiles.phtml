@@ -1,0 +1,84 @@
+<div class="card mb-4">
+	<div class="card-header d-flex justify-content-between">
+		<div>
+			<b><?=$this->title?></b>
+		</div>
+		<?php
+		$user = $this->currentUser();
+		$roles = [];
+		foreach ($user->memberOf() as $role) {
+		    array_push($roles, $role['ROLENAME']);
+		}
+		
+		
+		if ($form && $this->acl_service->isAllowed($roles, 'files/default', 'upload')) {
+		    $form->setAttribute('action', $this->url('files', ['action' => 'upload']));
+		    $form->prepare();
+		    echo $this->form()->openTag($form);
+		    echo $this->formRow($form->get('UUID'));
+		    echo $this->formRow($form->get('REFERENCE'));
+		    
+		    $this->headScript()->prependFile('https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js');
+		    ?>
+		    <script type="text/javascript">
+    		    $(document).ready(function () {
+                  bsCustomFileInput.init()
+                });
+		    </script>
+		    <div class="custom-file">
+                <input type="file" class="custom-file-input" id="FILE" name="FILE" onchange="form.submit()">
+                <label class="custom-file-label" for="customFile">Choose file</label>
+            </div>
+		    <?php
+		    echo $this->formRow($form->get('SECURITY'));
+		    echo $this->form()->closeTag($form);
+		}
+		
+		?>
+	</div>
+
+	<div class="card-body">
+		<?php if (sizeof($data) === 0) { echo "No Records Retrieved."; } else { ?>
+    	<table class="table table-striped">
+        	<thead>
+        		<tr>
+        	<?php 
+            	$i=0;
+            	$header = array_keys(array_values($this->data)[0]);
+            	foreach ($header as $key) {
+            	    if (strpos($key, $this->primary_key) === 0 ) { continue; }
+            	    echo "<th onclick='sortTable($i)' style='cursor: pointer;'>$key</th>";
+            	    $i++;
+            	}
+            ?>
+           			<th></th>
+           			<th></th>
+        		</tr>
+        	</thead>
+        	<tbody>
+        		<?php foreach ($this->data as $record) : ?>
+        		<tr>
+        			<?php foreach ($record as $key => $value) : ?>
+        				<?php if (strpos($key, $this->primary_key) === 0 ) { continue; } ?>
+        				<td><?php echo $value; ?></td>
+        			<?php endforeach; ?>
+        			<td class="float-right">
+        				<?php echo $this->actionmenu()->setData($record)->render($actionMenu); ?>
+    				</td>
+        			
+        			<td class="float-right">
+                    <?php 
+                    if (isset($dialogs)) {
+                        foreach ($dialogs as $dialog) {
+                            echo $this->dialog($dialog);
+                        }
+                    }
+                    ?>
+                    </td>
+        		</tr>
+        		<?php endforeach; ?>
+        	</tbody>
+    	</table>
+    	<?php } ?>
+	</div>
+</div>

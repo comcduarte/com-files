@@ -8,7 +8,9 @@ use Files\Controller\Factory\FilesControllerFactory;
 use Files\Model\FilesModel;
 use Files\Model\Factory\FilesModelFactory;
 use Files\Service\Factory\FilesModelAdapterFactory;
+use Files\View\Helper\BoxFiles;
 use Files\View\Helper\Files;
+use Files\View\Helper\Factory\BoxFilesFactory;
 use Files\View\Helper\Factory\FilesFactory;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Segment;
@@ -53,7 +55,7 @@ return [
         ],
     ],
     'acl' => [
-        'everyone' => [
+        'EVERYONE' => [
             'files/default' => [],
         ],
         'admin' => [
@@ -91,15 +93,18 @@ return [
         ],
     ],
     'view_helpers' => [
-        'factories' => [
-            Files::class => FilesFactory::class,
-        ],
         'aliases' => [
+            'boxFiles' => BoxFiles::class,
             'relatedFiles' => Files::class,
+        ],
+        'factories' => [
+            BoxFiles::class => BoxFilesFactory::class,
+            Files::class => FilesFactory::class,
         ],
     ],
     'view_manager' => [
         'template_map' => [
+            'boxfiles' => __DIR__ . '/../view/files/files/boxfiles.phtml',
             'files' => __DIR__ . '/../view/files/files/files.phtml',
             'files_layout' => __DIR__ . '/../view/files/layouts/files_layout.phtml',
             'files_view' => __DIR__ . '/../view/files/files/view.phtml',

@@ -1,9 +1,9 @@
 <?php
 namespace Files\Model\Factory;
 
-use Interop\Container\ContainerInterface;
-use Laminas\ServiceManager\Factory\FactoryInterface;
 use Files\Model\FilesModel;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 
 class FilesModelFactory implements FactoryInterface
 {

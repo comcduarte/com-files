@@ -1,63 +1,62 @@
 <?php
 namespace Files\View\Helper;
 
-use Components\Traits\AclAwareTrait;
 use Files\Form\FilesUploadForm;
-use Laminas\View\Helper\AbstractHelper;
-/**
- * 
- * @author DuarteC
- *
- * @use <?php $this->relatedFiles()->setTitle('Related Files')->setData($this->files)->setReference($this->reference)->render(); ?>
- */
-class Files extends AbstractHelper
+
+class BoxFiles extends Files
 {
-    use AclAwareTrait;
-    
-    public $data;
-    public $title;
-    public $reference;
-    public $form;
-    public $primary_key = 'UUID';
+    use Variables;
     
     public function __invoke()
     {
+        $this->setVariable('primary_key', 'UUID');
         return $this;
     }
     
-    public function setTitle($title)
+    public function setData($data)
     {
-        $this->title = $title;
-        return $this;
-    }
-    
-    public function getTitle()
-    {
-        return $this->title;
-    }
-    
-    public function setData($data) 
-    {
-        $this->data = $data;
+        $this->setVariable('data', $data);
         return $this;
     }
     
     public function getData()
     {
-        return $this->data;
+        return $this->getVariable('data');
     }
     
-    /**
-     * @var \Laminas\View\Helper\Partial $partialHelper
-     * @return \Files\View\Helper\Files
-     */
+    public function setTitle($title)
+    {
+        $this->setVariable('title', $title);
+        return $this;
+    }
+    
+    public function getTitle()
+    {
+        return $this->getVariable('title');
+    }
+    
+    public function setReference($reference)
+    {
+        $this->setVariable('reference', $reference);
+        return $this;
+    }
+    
+    public function getReference()
+    {
+        return $this->getVariable('reference');
+    }
+    
     public function render()
     {
         $form = new FilesUploadForm();
         $form->init();
         $form->get('REFERENCE')->setValue($this->getReference());
+        $this->setVariable('form', $form);
+        $this->setVariable('acl_service', $this->getAclService());
         
         $partialHelper = $this->view->plugin('partial');
+        
+        /**
         $params = [
             'title' => $this->getTitle(),
             'acl_service' => $this->getAclService(),
@@ -78,21 +77,9 @@ class Files extends AbstractHelper
                     'label' => 'Delete',
                 ],
             ],
-        ];
+        ]; */
         
-        echo $partialHelper('files', $params);
+        echo $partialHelper('boxfiles', $this->getVariables());
         return $this;
     }
-    
-    public function setReference($reference)
-    {
-        $this->reference = $reference;
-        return $this;
-    }
-    
-    public function getReference()
-    {
-        return $this->reference;
-    }
-    
 }

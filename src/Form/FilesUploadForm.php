@@ -33,6 +33,7 @@ class FilesUploadForm extends Form
                 'id' => 'FILE',
                 'class' => 'form-input',
                 'onchange' => 'form.submit()',
+                'accept' => '*/*',
             ],
             'options' => [
                 'label' => 'Upload File',
